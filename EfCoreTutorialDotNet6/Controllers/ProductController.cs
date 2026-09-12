@@ -23,19 +23,29 @@ namespace EfCoreTutorialDotNet6.Controllers
             
                 return NotFound();
 
+           
+
             var pageResults = 3f;
 
             var pageCount = Math.Ceiling(_context.Products.Count() / pageResults);
             
 
             var products = await _context.Products
-                .Skip(page -1 * (int)pageResults)
+                .OrderBy(p => p.Id)
+                .Skip((page - 1) * (int)pageResults)
                 .Take((int)pageResults)
                 .ToListAsync();
+
+            var response = new ProductResponse
+            {
+                Products = products,
+                CurrentPage = page,
+                Pages = (int)pageCount
+            };
                  
 
 
-            return Ok(products);
+            return Ok(response);
         }
 
     }
